@@ -2,6 +2,8 @@ A beautiful calendar library for cross platforms.
 
 ## Maxx Calendar
  This package provides two month view modes.
+ ![Group 4 (1)](https://github.com/maxx2478/max_calendar_library_flutter/assets/64951609/6c87a4c9-fb24-4edb-aae9-faae351ba114)
+
 
 ## Features
 - Switch MonthView modes between events with visible texts and events with dots.
