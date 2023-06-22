@@ -1,1 +1,1 @@
-enum CalType { MONTHVIEW, MONTHDOTVIEW }
+enum CalType { monthView, monthDotView }

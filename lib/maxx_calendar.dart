@@ -11,13 +11,12 @@ import 'package:maxx_calendar/widget/caltype.dart';
 import 'package:maxx_calendar/widget/constants.dart';
 import 'package:maxx_calendar/widget/views.dart';
 
-
-
+//ignore: must_be_immutable
 class MaxxCalendar extends StatefulWidget {
   DateTime now = DateTime.now();
   DateFormat formatter = DateFormat('EEE');
   DateFormat defaultFormat = DateFormat("dd-MM-yyyy");
-  var calType = CalType.MONTHVIEW;
+  var calType = CalType.monthView;
   Color tileBorderColor = Colors.black54;
   Color tileDateColor = Colors.black54;
   var currMonth = DateTime.now().month;
@@ -36,15 +35,15 @@ class MaxxCalendar extends StatefulWidget {
 
   MaxxCalendar(
       {Key? key,
-        required this.calType,
-        required this.tileBorderColor,
-        required this.tileDateColor,
-        required this.events,
-        required this.onDateClick,
-        required this.onDateChangeListener,
-        required this.currMonth,
-        required this.currYear,
-        required this.hideMonthNavigationButtons})
+      required this.calType,
+      required this.tileBorderColor,
+      required this.tileDateColor,
+      required this.events,
+      required this.onDateClick,
+      required this.onDateChangeListener,
+      required this.currMonth,
+      required this.currYear,
+      required this.hideMonthNavigationButtons})
       : super(key: key);
 
   @override
@@ -52,6 +51,8 @@ class MaxxCalendar extends StatefulWidget {
 }
 
 class _MaxxCalendarState extends State<MaxxCalendar> {
+
+  //get total no of days in the provided month
   static int getDaysInMonth(int year, int month) {
     if (month == DateTime.february) {
       final bool isLeapYear =
@@ -75,14 +76,13 @@ class _MaxxCalendarState extends State<MaxxCalendar> {
     return daysInMonth[month - 1];
   }
 
+  //creates the final events list for calendar
   void createFinalList() {
     widget.firstDayOfMonth =
         widget.formatter.format(DateTime(widget.currYear, widget.currMonth, 0));
 
-    widget.firstDaySpacing = Constants.firstDayOffset(
-        widget.currYear,
-        (widget.currMonth),
-        const DefaultMaterialLocalizations());
+    widget.firstDaySpacing = Constants.firstDayOffset(widget.currYear,
+        (widget.currMonth), const DefaultMaterialLocalizations());
 
     if (widget.firstDaySpacing > 0) {
       for (var i = 1; i <= widget.firstDaySpacing; i++) {
@@ -121,26 +121,38 @@ class _MaxxCalendarState extends State<MaxxCalendar> {
   @override
   Widget build(BuildContext context) {
 
+    //handle next button click
     void onNextBtnClick() {
       setState(() {
         widget.resultEvents = [];
         widget.emptyEvents = [];
-        widget.currMonth != 12
-            ? {widget.currMonth = (widget.currMonth + 1)}
-            : {widget.currMonth = 1, widget.currYear = widget.currYear + 1};
+        if (widget.currMonth != 12) {
+          widget.currMonth = widget.currMonth + 1;
+        } else {
+          widget.currMonth = 1;
+          widget.currYear = widget.currYear + 1;
+        }
 
         createFinalList();
       });
       widget.onDateChangeListener("${widget.currMonth}-${widget.currYear}");
     }
 
+    //handle prev button click
     void onPrevBtnClick() {
       setState(() {
         widget.resultEvents = [];
         widget.emptyEvents = [];
-        widget.currMonth != 1
-            ? {(widget.currMonth = widget.currMonth - 1)}
-            : {widget.currMonth = 12, widget.currYear = widget.currYear - 1};
+        if(widget.currMonth!=1)
+          {
+            widget.currMonth = widget.currMonth - 1;
+          }
+        else
+          {
+            widget.currMonth = 12;
+            widget.currYear = widget.currYear - 1;
+          }
+
         createFinalList();
       });
       widget.onDateChangeListener("${widget.currMonth}-${widget.currYear}");
@@ -157,40 +169,40 @@ class _MaxxCalendarState extends State<MaxxCalendar> {
           child: widget.hideMonthNavigationButtons == true
               ? const SizedBox()
               : Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              InkWell(
-                radius: 15,
-                borderRadius: BorderRadius.circular(15),
-                onTap: () {
-                  onPrevBtnClick();
-                },
-                child: const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Icon(
-                    Icons.arrow_back_ios_new,
-                    size: 15,
-                  ),
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    InkWell(
+                      radius: 15,
+                      borderRadius: BorderRadius.circular(15),
+                      onTap: () {
+                        onPrevBtnClick();
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Icon(
+                          Icons.arrow_back_ios_new,
+                          size: 15,
+                        ),
+                      ),
+                    ),
+                    paragraphText(
+                        "${Constants.getCalendarMonth(widget.currMonth).toString()} ${widget.currYear}",
+                        size: 12),
+                    InkWell(
+                      borderRadius: BorderRadius.circular(15),
+                      child: const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Icon(
+                          Icons.arrow_forward_ios,
+                          size: 15,
+                        ),
+                      ),
+                      onTap: () {
+                        onNextBtnClick();
+                      },
+                    ),
+                  ],
                 ),
-              ),
-              paragraphText(
-                  "${Constants.getCalendarMonth(widget.currMonth).toString()} ${widget.currYear}",
-                  size: 12),
-              InkWell(
-                borderRadius: BorderRadius.circular(15),
-                child: const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Icon(
-                    Icons.arrow_forward_ios,
-                    size: 15,
-                  ),
-                ),
-                onTap: () {
-                  onNextBtnClick();
-                },
-              ),
-            ],
-          ),
         ),
         SizedBox(
           height: 16,
@@ -214,11 +226,11 @@ class _MaxxCalendarState extends State<MaxxCalendar> {
             child: GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     childAspectRatio:
-                    widget.calType == CalType.MONTHVIEW ? 8 / 16 : 1 / 1,
+                        widget.calType == CalType.monthView ? 8 / 16 : 1 / 1,
                     crossAxisSpacing: 0,
                     mainAxisSpacing: 0,
                     mainAxisExtent:
-                    widget.calType == CalType.MONTHVIEW ? 84 : 64,
+                        widget.calType == CalType.monthView ? 84 : 64,
                     crossAxisCount: 7),
                 itemCount: getDaysInMonth(widget.currYear, widget.currMonth) +
                     widget.firstDaySpacing +
@@ -229,77 +241,77 @@ class _MaxxCalendarState extends State<MaxxCalendar> {
                       : <MaxxEventModel>[];
                   return Animate(
                     effects: [FadeEffect(delay: 500.ms)],
-                    child: widget.calType == CalType.MONTHVIEW
+                    child: widget.calType == CalType.monthView
                         ? CalendarTile(
-                      title: ((index - widget.firstDaySpacing < 0
-                          ? "${getDaysInMonth(widget.currMonth == 1 ? (widget.currYear - 1) : (widget.currYear), (widget.currMonth - 1 < 1 ? 12 : widget.currMonth - 1)) + 1 - (widget.firstDaySpacing) + index}"
-                          : index >=
-                          (getDaysInMonth(widget.currYear,
-                              widget.currMonth) +
-                              widget.firstDaySpacing)
-                          ? "${index + 1 - (getDaysInMonth(widget.currYear, widget.currMonth) + widget.firstDaySpacing)}"
-                          : "${(index + 1) - widget.firstDaySpacing}"))
-                          .toString(),
-                      events: item,
-                      onClick: (events) {
-                        invokeOnclick(events);
-                      },
-                      isEnabled: (index - widget.firstDaySpacing < 0
-                          ? false
-                          : index >=
-                          (getDaysInMonth(widget.currYear,
-                              widget.currMonth) +
-                              widget.firstDaySpacing)
-                          ? false
-                          : true),
-                      date: (index - widget.firstDaySpacing < 0
-                          ? "" //previous month dates
-                          : index >=
-                          (getDaysInMonth(widget.currYear,
-                              widget.currMonth) +
-                              widget.firstDaySpacing)
-                          ? "" //next month dates
-                          : "${index - widget.firstDaySpacing + 1 < 10 ? "0${index - widget.firstDaySpacing + 1}" : index - widget.firstDaySpacing + 1}-${widget.currMonth < 10 ? "0${widget.currMonth}" : widget.currMonth}-${widget.currYear}"),
-                      todaysDate:
-                      widget.defaultFormat.format(DateTime.now()),
-                      tileBorderColor: widget.tileBorderColor,
-                      tileTextColor: widget.tileDateColor,
-                    )
+                            title: ((index - widget.firstDaySpacing < 0
+                                    ? "${getDaysInMonth(widget.currMonth == 1 ? (widget.currYear - 1) : (widget.currYear), (widget.currMonth - 1 < 1 ? 12 : widget.currMonth - 1)) + 1 - (widget.firstDaySpacing) + index}"
+                                    : index >=
+                                            (getDaysInMonth(widget.currYear,
+                                                    widget.currMonth) +
+                                                widget.firstDaySpacing)
+                                        ? "${index + 1 - (getDaysInMonth(widget.currYear, widget.currMonth) + widget.firstDaySpacing)}"
+                                        : "${(index + 1) - widget.firstDaySpacing}"))
+                                .toString(),
+                            events: item,
+                            onClick: (events) {
+                              invokeOnclick(events);
+                            },
+                            isEnabled: (index - widget.firstDaySpacing < 0
+                                ? false
+                                : index >=
+                                        (getDaysInMonth(widget.currYear,
+                                                widget.currMonth) +
+                                            widget.firstDaySpacing)
+                                    ? false
+                                    : true),
+                            date: (index - widget.firstDaySpacing < 0
+                                ? "" //previous month dates
+                                : index >=
+                                        (getDaysInMonth(widget.currYear,
+                                                widget.currMonth) +
+                                            widget.firstDaySpacing)
+                                    ? "" //next month dates
+                                    : "${index - widget.firstDaySpacing + 1 < 10 ? "0${index - widget.firstDaySpacing + 1}" : index - widget.firstDaySpacing + 1}-${widget.currMonth < 10 ? "0${widget.currMonth}" : widget.currMonth}-${widget.currYear}"),
+                            todaysDate:
+                                widget.defaultFormat.format(DateTime.now()),
+                            tileBorderColor: widget.tileBorderColor,
+                            tileTextColor: widget.tileDateColor,
+                          )
                         : CalendarDotTile(
-                      title: ((index - widget.firstDaySpacing < 0
-                          ? "${getDaysInMonth(widget.currMonth == 1 ? (widget.currYear - 1) : (widget.currYear), (widget.currMonth - 1 < 1 ? 12 : widget.currMonth - 1)) + 1 - (widget.firstDaySpacing) + index}"
-                          : index >=
-                          (getDaysInMonth(widget.currYear,
-                              widget.currMonth) +
-                              widget.firstDaySpacing)
-                          ? "${index + 1 - (getDaysInMonth(widget.currYear, widget.currMonth) + widget.firstDaySpacing)}"
-                          : "${(index + 1) - widget.firstDaySpacing}"))
-                          .toString(),
-                      events: item,
-                      onClick: (events) {
-                        invokeOnclick(events);
-                      },
-                      isEnabled: (index - widget.firstDaySpacing < 0
-                          ? false
-                          : index >=
-                          (getDaysInMonth(widget.currYear,
-                              widget.currMonth) +
-                              widget.firstDaySpacing)
-                          ? false
-                          : true),
-                      date: (index - widget.firstDaySpacing < 0
-                          ? "" //previous month dates
-                          : index >=
-                          (getDaysInMonth(widget.currYear,
-                              widget.currMonth) +
-                              widget.firstDaySpacing)
-                          ? "" //next month dates
-                          : "${index - widget.firstDaySpacing + 1 < 10 ? "0${index - widget.firstDaySpacing + 1}" : index - widget.firstDaySpacing + 1}-${widget.currMonth < 10 ? "0${widget.currMonth}" : widget.currMonth}-${widget.currYear}"),
-                      todaysDate:
-                      widget.defaultFormat.format(DateTime.now()),
-                      tileBorderColor: widget.tileBorderColor,
-                      tileTextColor: widget.tileDateColor,
-                    ),
+                            title: ((index - widget.firstDaySpacing < 0
+                                    ? "${getDaysInMonth(widget.currMonth == 1 ? (widget.currYear - 1) : (widget.currYear), (widget.currMonth - 1 < 1 ? 12 : widget.currMonth - 1)) + 1 - (widget.firstDaySpacing) + index}"
+                                    : index >=
+                                            (getDaysInMonth(widget.currYear,
+                                                    widget.currMonth) +
+                                                widget.firstDaySpacing)
+                                        ? "${index + 1 - (getDaysInMonth(widget.currYear, widget.currMonth) + widget.firstDaySpacing)}"
+                                        : "${(index + 1) - widget.firstDaySpacing}"))
+                                .toString(),
+                            events: item,
+                            onClick: (events) {
+                              invokeOnclick(events);
+                            },
+                            isEnabled: (index - widget.firstDaySpacing < 0
+                                ? false
+                                : index >=
+                                        (getDaysInMonth(widget.currYear,
+                                                widget.currMonth) +
+                                            widget.firstDaySpacing)
+                                    ? false
+                                    : true),
+                            date: (index - widget.firstDaySpacing < 0
+                                ? "" //previous month dates
+                                : index >=
+                                        (getDaysInMonth(widget.currYear,
+                                                widget.currMonth) +
+                                            widget.firstDaySpacing)
+                                    ? "" //next month dates
+                                    : "${index - widget.firstDaySpacing + 1 < 10 ? "0${index - widget.firstDaySpacing + 1}" : index - widget.firstDaySpacing + 1}-${widget.currMonth < 10 ? "0${widget.currMonth}" : widget.currMonth}-${widget.currYear}"),
+                            todaysDate:
+                                widget.defaultFormat.format(DateTime.now()),
+                            tileBorderColor: widget.tileBorderColor,
+                            tileTextColor: widget.tileDateColor,
+                          ),
                   );
                 }),
           ),

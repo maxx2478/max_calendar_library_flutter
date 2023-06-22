@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:maxx_calendar/widget/cal_model.dart';
 import 'package:maxx_calendar/widget/views.dart';
 
-
+//ignore: must_be_immutable
 class CalendarTile extends StatefulWidget {
   String title;
   List<MaxxEventModel> events = [];
