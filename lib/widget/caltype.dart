@@ -1,0 +1,1 @@
+enum CalType { MONTHVIEW, MONTHDOTVIEW }
