@@ -6,6 +6,9 @@ This package provides two month view modes.
 
 ![Group 4 (1)](https://user-images.githubusercontent.com/64951609/247869785-47fa9aa8-c91a-420a-bebc-b00ae5082cc8.png)
 
+![Group 4 (1)](https://github.com/maxx2478/max_calendar_library_flutter/assets/64951609/47fa9aa8-c91a-420a-bebc-b00ae5082cc8)
+
+
 ## Features
 
 - Switch MonthView modes between events with visible texts and events with dots.
